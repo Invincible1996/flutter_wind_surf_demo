@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_video_demo/routes/app_router.dart';
 import 'package:web_video_demo/web_view_page.dart';
 import 'package:web_video_demo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:web_video_demo/features/theme/presentation/bloc/theme_bloc.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthInitial) {
-          Navigator.of(context).pushReplacementNamed('/login');
+          AutoRouter.of(context).replace(const LoginRoute());
         }
       },
       child: Scaffold(
