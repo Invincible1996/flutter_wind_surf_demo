@@ -1,25 +1,24 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../web_view_page.dart';
-import '../blocs/login/login_bloc.dart';
-import '../blocs/login/login_state.dart';
-import '../blocs/theme/theme_bloc.dart';
-import '../blocs/theme/theme_event.dart';
-import '../blocs/theme/theme_state.dart';
-import '../widgets/app_drawer.dart';
-import 'login_screen.dart';
+import 'package:web_video_demo/web_view_page.dart';
+import 'package:web_video_demo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:web_video_demo/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:web_video_demo/features/theme/presentation/bloc/theme_state.dart';
+import 'package:web_video_demo/widgets/app_drawer.dart';
 
+import '../features/theme/presentation/bloc/theme_event.dart';
+
+@RoutePage()
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.status == LoginStatus.initial) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
+        if (state is AuthInitial) {
+          Navigator.of(context).pushReplacementNamed('/login');
         }
       },
       child: Scaffold(
@@ -34,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                     state.isDarkMode ? Icons.light_mode : Icons.dark_mode,
                   ),
                   onPressed: () {
-                    context.read<ThemeBloc>().add(ToggleTheme());
+                    context.read<ThemeBloc>().add(ToggleThemeEvent());
                   },
                 );
               },
@@ -42,32 +41,31 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         drawer: const AppDrawer(),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BlocBuilder<LoginBloc, LoginState>(
-                builder: (context, state) {
-                  return Text(
-                    'Welcome, ${state.displayName ?? "User"}!',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+        body: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is AuthAuthenticated) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Welcome ${state.user.name ?? state.user.email}!'),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const WebViewPage()),
+                        );
+                      },
+                      child: const Text('Go to Video Demo'),
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const WebViewPage()),
-                  );
-                },
-                child: const Text('Go to Video Demo'),
-              ),
-            ],
-          ),
+                  ],
+                ),
+              );
+            }
+            return const Center(child: Text('Please login to continue'));
+          },
         ),
       ),
     );

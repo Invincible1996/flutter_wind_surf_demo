@@ -1,22 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// author kevin
 /// date 11/14/24 23:25
-class WebViewPage extends StatefulWidget {
+@RoutePage()
+class WebViewPage extends StatelessWidget {
   const WebViewPage({super.key});
 
   @override
-  State<WebViewPage> createState() => _WebViewPageState();
-}
+  Widget build(BuildContext context) {
+    late final WebViewController controller;
 
-class _WebViewPageState extends State<WebViewPage> {
-  late final WebViewController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    final videoUrl =
+    const videoUrl =
         'https://va-download.oss-cn-hangzhou.aliyuncs.com/client/app/test/test111111.mp4';
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -42,16 +38,13 @@ class _WebViewPageState extends State<WebViewPage> {
       ..loadHtmlString('''
         <html>
           <body>
-            <video src="${videoUrl}" controls="controls" controlslist="nofullscreen nodownload noremoteplayback" style="position: relative; right: 35px; width: 800px">
+            <video src="$videoUrl" controls="controls" controlslist="nofullscreen nodownload noremoteplayback" style="position: relative; right: 35px; width: 800px">
           您的浏览器不支持 video 标签。
         </video>
           </body>
         </html>
     ''');
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Flutter Simple Example')),
       body: WebViewWidget(controller: controller),
