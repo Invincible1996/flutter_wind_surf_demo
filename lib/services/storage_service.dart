@@ -1,35 +1,64 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StorageService {
-  static const String _keyUser = 'user_data';
+abstract class StorageService {
+  String get storageKey;
   
-  static Future<void> saveUserData({
+  Future<void> saveData(dynamic data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(storageKey, jsonEncode(data));
+  }
+
+  Future<T?> getData<T>() async {
+    final prefs = await SharedPreferences.getInstance();
+    final dataString = prefs.getString(storageKey);
+    if (dataString != null) {
+      return jsonDecode(dataString) as T;
+    }
+    return null;
+  }
+
+  Future<void> removeData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(storageKey);
+  }
+
+  static Future<Set<String>> getAllKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getKeys();
+  }
+}
+
+class UserStorageService extends StorageService {
+  static final UserStorageService _instance = UserStorageService._internal();
+  
+  factory UserStorageService() {
+    return _instance;
+  }
+  
+  UserStorageService._internal();
+  
+  @override
+  String get storageKey => 'user_data';
+  
+  Future<void> saveUserData({
     required String email,
     required String displayName,
     required String avatarUrl,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
     final userData = {
       'email': email,
       'displayName': displayName,
       'avatarUrl': avatarUrl,
     };
-    await prefs.setString(_keyUser, jsonEncode(userData));
+    await saveData(userData);
   }
 
-  static Future<Map<String, dynamic>?> getUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Check if user data exists
-    final userDataString = prefs.getString(_keyUser);
-    if (userDataString != null) {
-      return jsonDecode(userDataString) as Map<String, dynamic>;
-    }
-    return null;
+  Future<Map<String, dynamic>?> getUserData() async {
+    return getData<Map<String, dynamic>>();
   }
 
-  static Future<void> clearUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyUser);
+  Future<void> clearUserData() async {
+    await removeData();
   }
 }
