@@ -4,11 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_video_demo/routes/app_router.dart';
 import 'package:web_video_demo/web_view_page.dart';
 import 'package:web_video_demo/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:web_video_demo/features/theme/presentation/bloc/theme_bloc.dart';
-import 'package:web_video_demo/features/theme/presentation/bloc/theme_state.dart';
+import 'package:web_video_demo/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:web_video_demo/widgets/app_drawer.dart';
-
-import '../features/theme/presentation/bloc/theme_event.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -27,14 +24,14 @@ class HomeScreen extends StatelessWidget {
           title: const Text('Home'),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
-            BlocBuilder<ThemeBloc, ThemeState>(
-              builder: (context, state) {
+            BlocBuilder<ThemeCubit, bool>(
+              builder: (context, isDarkMode) {
                 return IconButton(
                   icon: Icon(
-                    state.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                    isDarkMode ? Icons.light_mode : Icons.dark_mode,
                   ),
                   onPressed: () {
-                    context.read<ThemeBloc>().add(ToggleThemeEvent());
+                    context.read<ThemeCubit>().toggleTheme();
                   },
                 );
               },

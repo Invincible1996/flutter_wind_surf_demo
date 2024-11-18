@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:web_video_demo/screens/home_screen.dart';
 import 'package:web_video_demo/screens/login_screen.dart';
+import 'package:web_video_demo/screens/home_screen.dart';
+import 'package:web_video_demo/screens/splash_screen.dart';
+import 'package:web_video_demo/features/settings/presentation/pages/settings_page.dart';
+// import WebViewPage;
 import 'package:web_video_demo/web_view_page.dart';
 
 part 'app_router.gr.dart';
@@ -10,8 +13,12 @@ class AppRouter extends _$AppRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(
-          page: LoginRoute.page,
+          page: SplashRoute.page,
           initial: true,
+          path: '/',
+        ),
+        AutoRoute(
+          page: LoginRoute.page,
           path: '/login',
         ),
         AutoRoute(
@@ -19,8 +26,8 @@ class AppRouter extends _$AppRouter {
           path: '/home',
         ),
         AutoRoute(
-          page: WebViewRoute.page,
-          path: '/webview',
+          page: SettingsRoute.page,
+          path: '/settings',
         ),
       ];
 }

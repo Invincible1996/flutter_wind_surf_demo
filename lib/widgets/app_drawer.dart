@@ -35,6 +35,13 @@ class AppDrawer extends StatelessWidget {
                         title: Text(state.user.name ?? state.user.email),
                       ),
                       ListTile(
+                        leading: const Icon(Icons.settings),
+                        title: const Text('Settings'),
+                        onTap: () {
+                          AutoRouter.of(context).push(const SettingsRoute());
+                        },
+                      ),
+                      ListTile(
                         leading: const Icon(Icons.logout),
                         title: const Text('Logout'),
                         onTap: () {
@@ -44,7 +51,8 @@ class AppDrawer extends StatelessWidget {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text('Logout'),
-                                content: const Text('Are you sure you want to logout?'),
+                                content: const Text(
+                                    'Are you sure you want to logout?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -64,8 +72,9 @@ class AppDrawer extends StatelessWidget {
                           ).then((confirmed) {
                             if (confirmed ?? false) {
                               context.read<AuthBloc>().add(LogoutRequested());
-                              AutoRouter.of(context)
-                                .pushAndPopUntil(const LoginRoute(), predicate: (_) => false);
+                              AutoRouter.of(context).pushAndPopUntil(
+                                  const LoginRoute(),
+                                  predicate: (_) => false);
                             }
                           });
                         },

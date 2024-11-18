@@ -1,57 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_video_demo/features/theme/presentation/bloc/theme_bloc.dart';
-import 'package:web_video_demo/features/theme/presentation/bloc/theme_event.dart';
-import 'package:web_video_demo/features/theme/presentation/bloc/theme_state.dart';
-import 'package:web_video_demo/routes/app_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'routes/app_router.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'injection_container.dart' as di;
+import 'features/settings/presentation/cubit/theme_cubit.dart';
+import 'injection_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
-  runApp(MyApp());
+  await init(); // Initialize dependency injection
+  final prefs = await SharedPreferences.getInstance();
+  final appRouter = AppRouter();
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<AuthBloc>(), // Use service locator
+        ),
+        BlocProvider(
+          create: (context) => ThemeCubit(prefs),
+        ),
+      ],
+      child: MyApp(appRouter: appRouter),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  final AppRouter appRouter;
 
-  final _appRouter = AppRouter();
+  const MyApp({
+    super.key,
+    required this.appRouter,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => di.sl<ThemeBloc>()..add(LoadTheme()),
-        ),
-        BlocProvider(
-          create: (context) => di.sl<AuthBloc>(),
-        ),
-      ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          return MaterialApp.router(
-            title: 'Web Video Demo',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepPurple,
-                brightness: Brightness.light,
-              ),
-              useMaterial3: true,
+    return BlocBuilder<ThemeCubit, bool>(
+      builder: (context, isDarkMode) {
+        return MaterialApp.router(
+          title: 'Web Video Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData.dark(
+            useMaterial3: true,
+          ).copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.dark,
             ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepPurple,
-                brightness: Brightness.dark,
-              ),
-              useMaterial3: true,
-            ),
-            themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            routerConfig: _appRouter.config(),
-          );
-        },
-      ),
+          ),
+          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          routerConfig: appRouter.config(),
+        );
+      },
     );
   }
 }

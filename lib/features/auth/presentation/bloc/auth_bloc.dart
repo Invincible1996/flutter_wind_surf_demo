@@ -11,11 +11,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Login login;
   final AuthLocalStorage storage;
 
-  AuthBloc({required this.login, required this.storage}) : super(AuthInitial()) {
+  AuthBloc({required this.login, required this.storage})
+      : super(AuthLoading()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
-    
+
     // Check auth status when bloc is created
     add(CheckAuthStatus());
   }

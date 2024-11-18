@@ -9,7 +9,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       // TODO: Implement actual login logic
       // This is a mock implementation
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 500));
       return Right(User(
         id: '1',
         email: email,
