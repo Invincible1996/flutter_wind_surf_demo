@@ -48,6 +48,16 @@ lib/
    flutter run
    ```
 
+## Screenshots
+
+### Light Theme
+![Home Screen - Light](/screenshots/home_light.png)
+![Settings - Light](/screenshots/settings_light.png)
+
+### Dark Theme
+![Home Screen - Dark](/screenshots/home_dark.png)
+![Settings - Dark](/screenshots/settings_dark.png)
+
 ## Dependencies
 
 - auto_route: For declarative routing
