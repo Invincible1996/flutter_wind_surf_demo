@@ -60,10 +60,25 @@ lib/
 
 ## Dependencies
 
-- auto_route: For declarative routing
-- flutter_bloc: State management
-- webview_flutter: WebView functionality
-- shared_preferences: Local data storage
+### Production Dependencies
+- [auto_route](https://pub.dev/packages/auto_route) ^7.8.4 - Declarative routing solution
+- [cupertino_icons](https://pub.dev/packages/cupertino_icons) ^1.0.6 - iOS style icons
+- [dartz](https://pub.dev/packages/dartz) ^0.10.1 - Functional programming features
+- [equatable](https://pub.dev/packages/equatable) ^2.0.5 - Value equality comparison
+- [flutter_bloc](https://pub.dev/packages/flutter_bloc) ^8.1.4 - State management solution
+- [get_it](https://pub.dev/packages/get_it) ^7.6.7 - Service locator for dependency injection
+- [http](https://pub.dev/packages/http) ^1.2.1 - HTTP networking package
+- [internet_connection_checker](https://pub.dev/packages/internet_connection_checker) ^1.0.0+1 - Network connectivity checker
+- [path](https://pub.dev/packages/path) ^1.8.3 - Path manipulation operations
+- [shared_preferences](https://pub.dev/packages/shared_preferences) ^2.2.2 - Persistent storage
+- [sqflite](https://pub.dev/packages/sqflite) ^2.3.2 - SQLite database
+- [url_launcher](https://pub.dev/packages/url_launcher) ^6.2.1 - URL handling and launching
+- [webview_flutter](https://pub.dev/packages/webview_flutter) ^4.4.2 - WebView widget
+
+### Development Dependencies
+- [auto_route_generator](https://pub.dev/packages/auto_route_generator) ^7.3.2 - Code generation for auto_route
+- [build_runner](https://pub.dev/packages/build_runner) ^2.4.8 - Code generation tool
+- [flutter_lints](https://pub.dev/packages/flutter_lints) ^3.0.0 - Recommended lints for Flutter apps
 
 ## Contributing
 
