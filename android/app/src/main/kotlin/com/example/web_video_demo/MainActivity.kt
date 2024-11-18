@@ -1,4 +1,4 @@
-package com.example.web_video_demo
+package com.example.flutter_wind_surf_demo
 
 import io.flutter.embedding.android.FlutterActivity
 

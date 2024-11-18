@@ -1,4 +1,4 @@
-# web_video_demo
+# flutter_wind_surf_demo
 
 A new Flutter project.
 

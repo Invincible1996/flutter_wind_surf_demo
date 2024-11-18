@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_video_demo/routes/app_router.dart';
-import 'package:web_video_demo/web_view_page.dart';
-import 'package:web_video_demo/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:web_video_demo/features/settings/presentation/cubit/theme_cubit.dart';
-import 'package:web_video_demo/widgets/app_drawer.dart';
+import 'package:flutter_wind_surf_demo/routes/app_router.dart';
+import 'package:flutter_wind_surf_demo/web_view_page.dart';
+import 'package:flutter_wind_surf_demo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_wind_surf_demo/features/settings/presentation/cubit/theme_cubit.dart';
+import 'package:flutter_wind_surf_demo/widgets/app_drawer.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
