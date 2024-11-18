@@ -30,12 +30,10 @@ class SettingsPage extends StatelessWidget {
           const ListTile(
             leading: Icon(Icons.language),
             title: Text('Language'),
-            // TODO: Implement language selection
           ),
           const ListTile(
             leading: Icon(Icons.info),
             title: Text('About'),
-            // TODO: Implement about section
           ),
         ],
       ),

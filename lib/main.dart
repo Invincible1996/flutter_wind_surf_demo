@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'routes/app_router.dart';
+
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/customer/presentation/bloc/customer_bloc.dart';
 import 'features/settings/presentation/cubit/theme_cubit.dart';
 import 'injection_container.dart';
+import 'routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,11 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => ThemeCubit(prefs),
+        ),
+        BlocProvider(
+          create: (context) => CustomerBloc(
+            customerRepository: sl(),
+          ),
         ),
       ],
       child: MyApp(appRouter: appRouter),
@@ -40,10 +47,22 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeCubit, bool>(
       builder: (context, isDarkMode) {
         return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           title: 'Web Video Demo',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
           darkTheme: ThemeData.dark(
             useMaterial3: true,
@@ -51,6 +70,16 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
               brightness: Brightness.dark,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Colors.deepPurple,
+              ),
             ),
           ),
           themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,

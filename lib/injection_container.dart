@@ -7,12 +7,15 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/datasources/auth_local_storage.dart';
+import 'features/customer/data/datasources/database_helper.dart';
+import 'features/customer/domain/repositories/customer_repository.dart';
+import 'features/customer/data/repositories/customer_repository_impl.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   final prefs = await SharedPreferences.getInstance();
-  
+
   // Features - Auth
   // Bloc
   sl.registerFactory(
@@ -27,13 +30,22 @@ Future<void> init() async {
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(),
+    () => AuthRepositoryImpl(
+      localDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<CustomerRepository>(
+    () => CustomerRepositoryImpl(
+      databaseHelper: sl(),
+    ),
   );
 
   // Data sources
   sl.registerLazySingleton(
     () => AuthLocalStorage(sl()),
   );
+  sl.registerLazySingleton(() => DatabaseHelper.instance);
 
   // Core
   sl.registerLazySingleton<NetworkInfo>(

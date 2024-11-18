@@ -4,6 +4,7 @@ import 'package:flutter_wind_surf_demo/screens/home_screen.dart';
 import 'package:flutter_wind_surf_demo/screens/splash_screen.dart';
 import 'package:flutter_wind_surf_demo/features/settings/presentation/pages/settings_page.dart';
 import 'package:flutter_wind_surf_demo/web_view_page.dart';
+import 'package:flutter_wind_surf_demo/features/customer/presentation/pages/add_customer_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -27,6 +28,10 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           page: SettingsRoute.page,
           path: '/settings',
+        ),
+        AutoRoute(
+          page: AddCustomerRoute.page,
+          path: '/add-customer',
         ),
       ];
 }

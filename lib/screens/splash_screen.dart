@@ -12,7 +12,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _rotationAnimation;
   late final Animation<double> _scaleAnimation;
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animation controller
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -47,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     // Start the animation
     _controller.forward();
-    
+
     context.read<AuthBloc>().add(CheckAuthStatus());
   }
 
@@ -60,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _navigateToPage(BuildContext context, AuthState state) async {
     await Future.delayed(const Duration(seconds: 2));
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     // Capture the router before the async gap
     final router = AutoRouter.of(context);
