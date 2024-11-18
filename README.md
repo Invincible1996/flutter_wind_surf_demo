@@ -1,16 +1,64 @@
 # flutter_wind_surf_demo
 
-A new Flutter project.
+A modern Flutter application demonstrating the integration of WebView functionality with a robust architecture and user-friendly features.
+
+## Features
+
+- **Responsive WebView Integration**: Seamless web content display within the app
+- **Theme Customization**: Support for both light and dark themes
+- **Authentication**: Secure user authentication system
+- **Navigation**: Auto-route based navigation for smooth screen transitions
+- **Settings Management**: User-configurable app settings
+- **Drawer Navigation**: Easy access to main app features
+
+## Project Structure
+
+```
+lib/
+├── features/
+│   ├── auth/         # Authentication related code
+│   └── settings/     # App settings and theme management
+├── routes/           # App routing configuration
+├── screens/          # Main app screens
+└── widgets/          # Reusable UI components
+```
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK (latest version)
+- Dart SDK
+- Android Studio / VS Code with Flutter plugins
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/flutter_wind_surf_demo.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+
+## Dependencies
+
+- auto_route: For declarative routing
+- flutter_bloc: State management
+- webview_flutter: WebView functionality
+- shared_preferences: Local data storage
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
