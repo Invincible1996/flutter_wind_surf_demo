@@ -5,8 +5,9 @@ A modern Flutter application demonstrating the integration of WebView functional
 ## Features
 
 - **Responsive WebView Integration**: Seamless web content display within the app
-- **Theme Customization**: Support for both light and dark themes
-- **Authentication**: Secure user authentication system
+- **Theme Customization**: Support for both light and dark themes using Provider
+- **Authentication**: Secure user authentication system with Provider state management
+- **Customer Management**: CRUD operations for customer data
 - **Navigation**: Auto-route based navigation for smooth screen transitions
 - **Settings Management**: User-configurable app settings
 - **Drawer Navigation**: Easy access to main app features
@@ -16,11 +17,22 @@ A modern Flutter application demonstrating the integration of WebView functional
 ```
 lib/
 ├── features/
-│   ├── auth/         # Authentication related code
-│   └── settings/     # App settings and theme management
-├── routes/           # App routing configuration
-├── screens/          # Main app screens
-└── widgets/          # Reusable UI components
+│   ├── auth/              # Authentication feature
+│   │   ├── presentation/
+│   │   │   ├── pages/    # Auth-related screens
+│   │   │   ├── providers/# Auth state management
+│   │   │   └── widgets/  # Auth-specific widgets
+│   ├── customer/          # Customer management feature
+│   │   └── presentation/
+│   │       ├── pages/    # Customer-related screens
+│   │       ├── providers/# Customer state management
+│   │       └── state/    # Customer state definitions
+│   ├── theme/            # Theme management
+│   │   └── presentation/
+│   │       └── providers/# Theme state management
+│   └── settings/         # App settings
+├── routes/               # App routing configuration
+└── injection_container.dart  # Dependency injection setup
 ```
 
 ## Getting Started
@@ -61,11 +73,11 @@ lib/
 ## Dependencies
 
 ### Production Dependencies
+- [provider](https://pub.dev/packages/provider) - Efficient and scalable state management
 - [auto_route](https://pub.dev/packages/auto_route) ^7.8.4 - Declarative routing solution
 - [cupertino_icons](https://pub.dev/packages/cupertino_icons) ^1.0.6 - iOS style icons
 - [dartz](https://pub.dev/packages/dartz) ^0.10.1 - Functional programming features
 - [equatable](https://pub.dev/packages/equatable) ^2.0.5 - Value equality comparison
-- [flutter_bloc](https://pub.dev/packages/flutter_bloc) ^8.1.4 - State management solution
 - [get_it](https://pub.dev/packages/get_it) ^7.6.7 - Service locator for dependency injection
 - [http](https://pub.dev/packages/http) ^1.2.1 - HTTP networking package
 - [internet_connection_checker](https://pub.dev/packages/internet_connection_checker) ^1.0.0+1 - Network connectivity checker
