@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_wind_surf_demo/features/customer/domain/models/customer.dart';
-import 'package:flutter_wind_surf_demo/features/customer/presentation/bloc/customer_bloc.dart';
+import 'package:flutter_wind_surf_demo/features/customer/presentation/providers/customer_provider.dart';
 
 // DropdownMenuEntry labels and values for the first dropdown menu.
 enum ColorLabel {
@@ -28,14 +28,14 @@ enum GenderLabel {
 }
 
 @RoutePage()
-class AddCustomerScreen extends StatefulWidget {
+class AddCustomerScreen extends ConsumerStatefulWidget {
   const AddCustomerScreen({super.key});
 
   @override
-  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
+  ConsumerState<AddCustomerScreen> createState() => _AddCustomerScreenState();
 }
 
-class _AddCustomerScreenState extends State<AddCustomerScreen> {
+class _AddCustomerScreenState extends ConsumerState<AddCustomerScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
@@ -142,10 +142,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               DropdownMenu<ColorLabel>(
                 initialSelection: ColorLabel.green,
                 controller: colorController,
-                // requestFocusOnTap is enabled/disabled by platforms when it is null.
-                // On mobile platforms, this is false by default. Setting this to true will
-                // trigger focus request on the text field and virtual keyboard will appear
-                // afterward. On desktop platforms however, this defaults to true.
                 requestFocusOnTap: true,
                 label: const Text('Color'),
                 onSelected: (ColorLabel? color) {
@@ -167,7 +163,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState?.validate() ?? false) {
                     final customer = Customer(
                       name: _nameController.text,
@@ -177,8 +173,12 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                       color: selectedColor?.label ?? 'Green',
                     );
 
-                    context.read<CustomerBloc>().add(AddCustomer(customer));
-                    context.router.maybePop();
+                    await ref
+                        .read(customerNotifierProvider.notifier)
+                        .addCustomer(customer);
+                    if (context.mounted) {
+                      context.router.maybePop();
+                    }
                   }
                 },
                 child: const Text('Save Customer Info'),

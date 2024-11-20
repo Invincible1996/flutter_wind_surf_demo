@@ -1,40 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/customer/presentation/bloc/customer_bloc.dart';
-import 'features/settings/presentation/cubit/theme_cubit.dart';
-import 'injection_container.dart';
+import 'features/theme/presentation/providers/theme_provider.dart';
 import 'routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await init(); // Initialize dependency injection
-  final prefs = await SharedPreferences.getInstance();
   final appRouter = AppRouter();
+  final sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<AuthBloc>(), // Use service locator
-        ),
-        BlocProvider(
-          create: (context) => ThemeCubit(prefs),
-        ),
-        BlocProvider(
-          create: (context) => CustomerBloc(
-            customerRepository: sl(),
-          ),
-        ),
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPreferences),
       ],
       child: MyApp(appRouter: appRouter),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   final AppRouter appRouter;
 
   const MyApp({
@@ -43,49 +28,20 @@ class MyApp extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, bool>(
-      builder: (context, isDarkMode) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: 'Web Video Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
-              ),
-            ),
-          ),
-          darkTheme: ThemeData.dark(
-            useMaterial3: true,
-          ).copyWith(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
-              brightness: Brightness.dark,
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                backgroundColor: Colors.deepPurple,
-              ),
-            ),
-          ),
-          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          routerConfig: appRouter.config(),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(themeNotifierProvider);
+
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'Web Video Demo',
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      themeMode: isDarkMode.when(
+        data: (isDark) => isDark ? ThemeMode.dark : ThemeMode.light,
+        loading: () => ThemeMode.system,
+        error: (e, s) => ThemeMode.system,
+      ),
+      routerConfig: appRouter.config(),
     );
   }
 }
