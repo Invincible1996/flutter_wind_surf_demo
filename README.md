@@ -63,12 +63,22 @@ lib/
 ## Screenshots
 
 ### Light Theme
-![Home Screen - Light](/screenshots/home_light.png)
-![Settings - Light](/screenshots/settings_light.png)
+
+<table>
+  <tr>
+    <td><img src="/screenshots/home_light.png" width="400"></td>
+    <td><img src="/screenshots/settings_light.png" width="400"></td>
+  </tr>
+</table>
 
 ### Dark Theme
-![Home Screen - Dark](/screenshots/home_dark.png)
-![Settings - Dark](/screenshots/settings_dark.png)
+
+<table>
+  <tr>
+    <td><img src="/screenshots/home_dark.png" width="400"></td>
+    <td><img src="/screenshots/settings_dark.png" width="400"></td>
+  </tr>
+</table>
 
 ## Dependencies
 
