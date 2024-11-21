@@ -5,6 +5,11 @@ class Customer {
   final int age;
   final String address;
   final String color;
+  final DateTime? createTime;
+  final String? school;
+  final DateTime? birthday;
+  final String? email;
+  final String? phone;
 
   Customer({
     this.id,
@@ -13,6 +18,11 @@ class Customer {
     required this.age,
     required this.address,
     required this.color,
+    this.createTime,
+    this.school,
+    this.birthday,
+    this.email,
+    this.phone,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +33,11 @@ class Customer {
       'age': age,
       'address': address,
       'color': color,
+      'createTime': createTime?.toIso8601String(),
+      'school': school,
+      'birthday': birthday?.toIso8601String(),
+      'email': email,
+      'phone': phone,
     };
   }
 
@@ -34,6 +49,15 @@ class Customer {
       age: map['age'] as int,
       address: map['address'] as String,
       color: map['color'] as String,
+      createTime: map['createTime'] != null 
+          ? DateTime.parse(map['createTime'] as String)
+          : null,
+      school: map['school'] as String?,
+      birthday: map['birthday'] != null 
+          ? DateTime.parse(map['birthday'] as String)
+          : null,
+      email: map['email'] as String?,
+      phone: map['phone'] as String?,
     );
   }
 }

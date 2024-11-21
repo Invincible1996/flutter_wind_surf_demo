@@ -46,7 +46,8 @@ class _CustomDataTableState extends State<CustomDataTable> {
     // Initialize controllers for each filterable column
     for (var column in widget.columns) {
       if (column.filterable && column.customCell == null) {
-        _filterControllers[column.label.toLowerCase()] = TextEditingController();
+        _filterControllers[column.label.toLowerCase()] =
+            TextEditingController();
       }
     }
     _filteredRows = widget.rows;
@@ -72,7 +73,9 @@ class _CustomDataTableState extends State<CustomDataTable> {
 
   void _resetFilters() {
     setState(() {
-      _filterControllers.values.forEach((controller) => controller.clear());
+      for (final controller in _filterControllers.values) {
+        controller.clear();
+      }
       _filteredRows = widget.rows;
     });
   }
@@ -80,6 +83,7 @@ class _CustomDataTableState extends State<CustomDataTable> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_filterControllers.isNotEmpty) ...[
           Padding(
@@ -182,7 +186,8 @@ class _CustomDataTableState extends State<CustomDataTable> {
                               return DataCell(
                                 Center(
                                   child: Text(
-                                    row[column.label.toLowerCase()]?.toString() ??
+                                    row[column.label.toLowerCase()]
+                                            ?.toString() ??
                                         '',
                                   ),
                                 ),

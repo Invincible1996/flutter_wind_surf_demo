@@ -107,6 +107,36 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             const CustomDataTableColumn(
+              label: 'School',
+              tooltip: 'School Name',
+            ),
+            CustomDataTableColumn(
+              label: 'Birthday',
+              tooltip: 'Customer Birthday',
+              customCell: (value) => Text(
+                value != null
+                    ? '${value.day}/${value.month}/${value.year}'
+                    : '-',
+              ),
+            ),
+            const CustomDataTableColumn(
+              label: 'Email',
+              tooltip: 'Customer Email',
+            ),
+            const CustomDataTableColumn(
+              label: 'Phone',
+              tooltip: 'Customer Phone',
+            ),
+            CustomDataTableColumn(
+              label: 'Created',
+              tooltip: 'Account Creation Date',
+              customCell: (value) => Text(
+                value != null
+                    ? '${value.day}/${value.month}/${value.year}'
+                    : '-',
+              ),
+            ),
+            const CustomDataTableColumn(
               label: 'Address',
               tooltip: 'Customer Address',
             ),
@@ -162,6 +192,11 @@ class HomeScreen extends ConsumerWidget {
             'name': customer.name,
             'age': customer.age,
             'gender': customer.gender,
+            'school': customer.school ?? '-',
+            'birthday': customer.birthday,
+            'email': customer.email ?? '-',
+            'phone': customer.phone ?? '-',
+            'created': customer.createTime,
             'address': customer.address,
             'actions': {'id': customer.id, 'name': customer.name},
           }).toList();

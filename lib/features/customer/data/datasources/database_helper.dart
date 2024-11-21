@@ -20,9 +20,27 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
+      onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Add new columns for version 2
+      await db.execute('ALTER TABLE customers ADD COLUMN createTime TEXT');
+      await db.execute('ALTER TABLE customers ADD COLUMN school TEXT');
+      await db.execute('ALTER TABLE customers ADD COLUMN birthday TEXT');
+      await db.execute('ALTER TABLE customers ADD COLUMN email TEXT');
+      await db.execute('ALTER TABLE customers ADD COLUMN phone TEXT');
+      
+      // Set default createTime for existing records
+      await db.execute(
+        "UPDATE customers SET createTime = ? WHERE createTime IS NULL",
+        [DateTime.now().toIso8601String()],
+      );
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -33,7 +51,12 @@ class DatabaseHelper {
         gender TEXT NOT NULL,
         age INTEGER NOT NULL,
         address TEXT NOT NULL,
-        color TEXT NOT NULL
+        color TEXT NOT NULL,
+        createTime TEXT,
+        school TEXT,
+        birthday TEXT,
+        email TEXT,
+        phone TEXT
       )
     ''');
   }
@@ -48,6 +71,11 @@ class DatabaseHelper {
       age: customer.age,
       address: customer.address,
       color: customer.color,
+      createTime: customer.createTime ?? DateTime.now(),
+      school: customer.school,
+      birthday: customer.birthday,
+      email: customer.email,
+      phone: customer.phone,
     ) : customer;
   }
 
