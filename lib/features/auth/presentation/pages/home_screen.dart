@@ -75,6 +75,7 @@ class HomeScreen extends ConsumerWidget {
             CustomDataTableColumn(
               label: 'Avatar',
               tooltip: 'Customer Avatar',
+              filterable: false,
               customCell: (value) => CircleAvatar(
                 backgroundColor: _getColorFromName(value as String),
                 child: Icon(_getGenderIcon(value)),
@@ -98,6 +99,7 @@ class HomeScreen extends ConsumerWidget {
             ),
             CustomDataTableColumn(
               label: 'Actions',
+              filterable: false,
               customCell: (value) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
