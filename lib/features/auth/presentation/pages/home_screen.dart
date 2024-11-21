@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/presentation/widgets/custom_data_table.dart';
 import '../../../../routes/app_router.dart';
 import '../../../customer/presentation/providers/customer_provider.dart';
 import '../providers/auth_provider.dart';
@@ -70,181 +71,96 @@ class HomeScreen extends ConsumerWidget {
             );
           }
 
+          final columns = [
+            CustomDataTableColumn(
+              label: 'Avatar',
+              tooltip: 'Customer Avatar',
+              customCell: (value) => CircleAvatar(
+                backgroundColor: _getColorFromName(value as String),
+                child: Icon(_getGenderIcon(value)),
+              ),
+            ),
+            const CustomDataTableColumn(
+              label: 'Name',
+              tooltip: 'Customer Name',
+            ),
+            const CustomDataTableColumn(
+              label: 'Age',
+              tooltip: 'Customer Age',
+              numeric: true,
+            ),
+            const CustomDataTableColumn(
+              label: 'Gender',
+            ),
+            const CustomDataTableColumn(
+              label: 'Address',
+              tooltip: 'Customer Address',
+            ),
+            CustomDataTableColumn(
+              label: 'Actions',
+              customCell: (value) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirm Delete'),
+                            content: Text(
+                                'Are you sure you want to delete ${value['name']}?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  ref
+                                      .read(customerNotifierProvider.notifier)
+                                      .deleteCustomer(value['id']);
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ];
+
+          final rows = customers.map((customer) => {
+            'avatar': customer.color,
+            'name': customer.name,
+            'age': customer.age,
+            'gender': customer.gender,
+            'address': customer.address,
+            'actions': {'id': customer.id, 'name': customer.name},
+          }).toList();
+
           return RefreshIndicator(
             onRefresh: () async {
               return ref
                   .read(customerNotifierProvider.notifier)
                   .loadCustomers();
             },
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: DataTable(
-                    border: TableBorder(
-                      horizontalInside: BorderSide(color: Colors.grey.shade300),
-                      verticalInside: BorderSide(color: Colors.grey.shade300),
-                      bottom: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    columnSpacing: 20,
-                    horizontalMargin: 12,
-                    columns: const [
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Avatar',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Customer Avatar',
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Name',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Customer Name',
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Age',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        numeric: true,
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Gender',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Address',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        tooltip: 'Customer Address',
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Actions',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                    rows: customers
-                        .map((customer) => DataRow(
-                              cells: [
-                                DataCell(
-                                  Center(
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          _getColorFromName(customer.color),
-                                      child:
-                                          Icon(_getGenderIcon(customer.gender)),
-                                    ),
-                                  ),
-                                ),
-                                DataCell(Center(child: Text(customer.name))),
-                                DataCell(Center(
-                                    child: Text(customer.age.toString()))),
-                                DataCell(Center(child: Text(customer.gender))),
-                                DataCell(Center(child: Text(customer.address))),
-                                DataCell(
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    'Confirm Delete'),
-                                                content: Text(
-                                                    'Are you sure you want to delete ${customer.name}?'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(); // Close dialog
-                                                    },
-                                                    child: const Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(); // Close dialog
-                                                      ref
-                                                          .read(
-                                                              customerNotifierProvider
-                                                                  .notifier)
-                                                          .deleteCustomer(
-                                                              customer.id!);
-                                                    },
-                                                    child: const Text('Delete'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                  ),
-                ),
-              ),
+            child: CustomDataTable(
+              columns: columns,
+              rows: rows,
+              borderColor: Colors.grey.shade300,
             ),
           );
         },
