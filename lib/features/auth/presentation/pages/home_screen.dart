@@ -90,8 +90,21 @@ class HomeScreen extends ConsumerWidget {
               tooltip: 'Customer Age',
               numeric: true,
             ),
-            const CustomDataTableColumn(
+            CustomDataTableColumn(
               label: 'Gender',
+              tooltip: 'Customer Gender',
+              customCell: (value) => Icon(
+                value.toString().toLowerCase() == 'male'
+                    ? Icons.male
+                    : value.toString().toLowerCase() == 'female'
+                        ? Icons.female
+                        : Icons.person,
+                color: value.toString().toLowerCase() == 'male'
+                    ? Colors.blue
+                    : value.toString().toLowerCase() == 'female'
+                        ? Colors.pink
+                        : Colors.grey,
+              ),
             ),
             const CustomDataTableColumn(
               label: 'Address',
