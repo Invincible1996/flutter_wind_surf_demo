@@ -55,7 +55,9 @@ class _CustomDataTableState extends State<CustomDataTable> {
 
   @override
   void dispose() {
-    _filterControllers.values.forEach((controller) => controller.dispose());
+    for (final controller in _filterControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -123,11 +125,17 @@ class _CustomDataTableState extends State<CustomDataTable> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        // apply button
+                        ElevatedButton.icon(
+                          onPressed: _applyFilters,
+                          icon: const Icon(Icons.search),
+                          label: const Text('Apply'),
+                        ),
+                        // reset button
                         ElevatedButton.icon(
                           onPressed: _resetFilters,
                           icon: const Icon(Icons.clear_all),
-                          label: const Text('Reset Filters'),
+                          label: const Text('Reset'),
                         ),
                       ],
                     ),
@@ -145,61 +153,84 @@ class _CustomDataTableState extends State<CustomDataTable> {
               constraints: BoxConstraints(
                 minWidth: MediaQuery.of(context).size.width,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: widget.borderColor),
-                ),
-                child: DataTable(
-                  border: TableBorder(
-                    horizontalInside: BorderSide(color: widget.borderColor),
-                    verticalInside: BorderSide(color: widget.borderColor),
-                    bottom: BorderSide(color: widget.borderColor),
-                  ),
-                  columnSpacing: widget.columnSpacing,
-                  horizontalMargin: widget.horizontalMargin,
-                  columns: widget.columns
-                      .map((column) => DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                column.label,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            tooltip: column.tooltip,
-                            numeric: column.numeric,
-                          ))
-                      .toList(),
-                  rows: _filteredRows
-                      .map((row) => DataRow(
-                            cells: widget.columns.map((column) {
-                              if (column.customCell != null) {
-                                return DataCell(
-                                  Center(
-                                      child: column.customCell!(
-                                          row[column.label.toLowerCase()])),
-                                );
-                              }
-                              return DataCell(
-                                Center(
-                                  child: Text(
-                                    row[column.label.toLowerCase()]
-                                            ?.toString() ??
-                                        '',
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Card(
+                  // 添加 Card 包装
+                  elevation: 1, // 设置阴影
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: widget.borderColor.withOpacity(0.1)), // 减淡边框颜色
+                      borderRadius: BorderRadius.circular(12), // 圆角
+                    ),
+                    child: ClipRRect(
+                      // 使用 ClipRRect 确保内容不会超出圆角
+                      borderRadius: BorderRadius.circular(12),
+                      child: DataTable(
+                        headingRowHeight: 56, // 增加表头高度
+                        dataRowHeight: 52, // 设置数据行高度
+                        headingRowColor: MaterialStateProperty.all(
+                            Colors.grey.shade50), // 表头背景色
+                        border: TableBorder(
+                          horizontalInside: BorderSide(
+                              color: widget.borderColor.withOpacity(0.1)),
+                          verticalInside: BorderSide(
+                              color: widget.borderColor.withOpacity(0.1)),
+                        ),
+                        columnSpacing: widget.columnSpacing,
+                        horizontalMargin: widget.horizontalMargin,
+                        columns: widget.columns
+                            .map((column) => DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      column.label,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14, // 调整字体大小
+                                        color: Colors.black87, // 调整文字颜色
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              );
-                            }).toList(),
-                          ))
-                      .toList(),
+                                  tooltip: column.tooltip,
+                                  numeric: column.numeric,
+                                ))
+                            .toList(),
+                        rows: _filteredRows
+                            .map((row) => DataRow(
+                                  cells: widget.columns.map((column) {
+                                    if (column.customCell != null) {
+                                      return DataCell(
+                                        Center(
+                                            child: column.customCell!(row[
+                                                column.label.toLowerCase()])),
+                                      );
+                                    }
+                                    return DataCell(
+                                      Center(
+                                        child: Text(
+                                          row[column.label.toLowerCase()]
+                                                  ?.toString() ??
+                                              '',
+                                          style: const TextStyle(
+                                            fontSize: 14, // 调整数据文字大小
+                                            color: Colors.black54, // 调整数据文字颜色
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        )
       ],
     );
   }
