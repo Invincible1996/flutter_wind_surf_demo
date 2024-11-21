@@ -40,12 +40,16 @@ class _AddCustomerScreenState extends ConsumerState<AddCustomerScreen> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
   final _addressController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _schoolController = TextEditingController();
 
   final TextEditingController colorController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController iconController = TextEditingController();
   ColorLabel? selectedColor;
   GenderLabel? selectedGender;
+  DateTime? selectedBirthday;
 
   @override
   void dispose() {
@@ -55,7 +59,24 @@ class _AddCustomerScreenState extends ConsumerState<AddCustomerScreen> {
     _nameController.dispose();
     _ageController.dispose();
     _addressController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _schoolController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectBirthday(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedBirthday ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != selectedBirthday) {
+      setState(() {
+        selectedBirthday = picked;
+      });
+    }
   }
 
   @override
@@ -125,6 +146,55 @@ class _AddCustomerScreenState extends ConsumerState<AddCustomerScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      return 'Please enter a valid email';
+                    }
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _schoolController,
+                decoration: const InputDecoration(
+                  labelText: 'School',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('Birthday'),
+                subtitle: Text(
+                  selectedBirthday != null
+                      ? '${selectedBirthday!.day}/${selectedBirthday!.month}/${selectedBirthday!.year}'
+                      : 'Not set',
+                ),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () => _selectBirthday(context),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(color: Colors.grey.shade400),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
                 controller: _addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address',
@@ -171,6 +241,11 @@ class _AddCustomerScreenState extends ConsumerState<AddCustomerScreen> {
                       age: int.parse(_ageController.text),
                       address: _addressController.text,
                       color: selectedColor?.label ?? 'Green',
+                      email: _emailController.text.isEmpty ? null : _emailController.text,
+                      phone: _phoneController.text.isEmpty ? null : _phoneController.text,
+                      school: _schoolController.text.isEmpty ? null : _schoolController.text,
+                      birthday: selectedBirthday,
+                      createTime: DateTime.now(),
                     );
 
                     await ref
