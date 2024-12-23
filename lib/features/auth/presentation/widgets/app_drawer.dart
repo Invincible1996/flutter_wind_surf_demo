@@ -33,6 +33,36 @@ class AppDrawer extends ConsumerWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.school),
+            title: const Text('新增线索'),
+            onTap: () {
+              context.router.push(const StudentInfoRoute());
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              context.router.replace(const HomeRoute());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bar_chart),
+            title: const Text('Statistics'),
+            onTap: () {
+              context.router.push(const StatisticsRoute());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.leaderboard),
+            title: const Text('排行榜'),
+            onTap: () {
+              context.router.push(const RankingRoute());
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {

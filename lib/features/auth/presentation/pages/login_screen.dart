@@ -90,27 +90,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final success = await ref
-                        .read(authNotifierProvider.notifier)
-                        .signIn(
-                            _emailController.text, _passwordController.text);
+                    // email ynwa@gmail.com
+                    // password ynwa@1892
+                    if (_emailController.text == 'ynwa@gmail.com' &&
+                        _passwordController.text == 'ynwa@1892') {
+                      final success = await ref
+                          .read(authNotifierProvider.notifier)
+                          .signIn(
+                              _emailController.text, _passwordController.text);
 
-                    if (!mounted) return;
+                      if (!mounted) return;
 
-                    if (success) {
-                      if (!context.mounted) return;
-                      context.router.replace(const HomeRoute());
-                    } else {
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Login failed. Please check your credentials.'),
-                        ),
-                      );
+                      if (success) {
+                        if (!context.mounted) return;
+                        context.router.replace(const HomeRoute());
+                      } else {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Login failed. Please check your credentials.'),
+                          ),
+                        );
+                      }
                     }
+                  } else {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Login failed. Please check your credentials.'),
+                      ),
+                    );
                   }
                 },
                 child: const Text('Login'),

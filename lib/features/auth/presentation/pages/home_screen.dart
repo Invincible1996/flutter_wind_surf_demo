@@ -1,19 +1,73 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_wind_surf_demo/features/auth/presentation/widgets/app_drawer.dart';
+import 'package:flutter_wind_surf_demo/features/auth/presentation/widgets/match_list_item.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../routes/app_router.dart';
-import '../providers/auth_provider.dart';
-import '../widgets/app_drawer.dart';
-import '../widgets/match_list_item.dart';
 import '../../../match/presentation/providers/match_provider.dart';
+import '../providers/auth_provider.dart';
 
 @RoutePage()
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Widget buildTeamInfo({
+    required String teamName,
+    required String imageUrl,
+    required bool isHome,
+  }) {
+    return Row(
+      mainAxisAlignment:
+          isHome ? MainAxisAlignment.start : MainAxisAlignment.end,
+      children: [
+        if (!isHome) ...[
+          Flexible(
+            child: Text(
+              teamName,
+              textAlign: TextAlign.end,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            width: 40,
+            height: 40,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+        ),
+        if (isHome) ...[
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              teamName,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final matchesAsync = ref.watch(matchesProvider);
 
     // Listen to auth state changes
@@ -31,9 +85,9 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.favorite_border),
             onPressed: () {
-              // TODO: Implement add match functionality
+              context.router.push(const FavoriteRoute());
             },
           ),
         ],
@@ -55,7 +109,7 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // TODO: Implement add match functionality
+                      // Navigate to the AddMatchScreen
                     },
                     icon: const Icon(Icons.add),
                     label: const Text('Add Match'),
@@ -72,55 +126,14 @@ class HomeScreen extends ConsumerWidget {
             child: ListView.builder(
               itemCount: matches.length,
               itemBuilder: (context, index) {
-                final match = matches[index];
                 return MatchListItem(
-                  match: match,
-                  buildTeamInfo: _buildTeamInfo,
+                  match: matches[index],
+                  buildTeamInfo: buildTeamInfo,
                 );
               },
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildTeamInfo({
-    required String teamName,
-    required String imageUrl,
-    required bool isHome,
-  }) {
-    return SizedBox(
-      width: 200,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: Image.network(
-              imageUrl,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 50,
-                  height: 50,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.sports_soccer, color: Colors.grey),
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            teamName,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: isHome ? TextAlign.left : TextAlign.right,
-          ),
-        ],
       ),
     );
   }

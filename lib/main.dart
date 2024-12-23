@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'core/config/app_config.dart';
+import 'core/config/dev_config.dart';
+import 'core/config/prod_config.dart';
 import 'features/theme/presentation/providers/theme_provider.dart';
 import 'routes/app_router.dart';
 
 void main() async {
+  // 根据启动参数设置环境
+  const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+
+  switch (flavor) {
+    case 'prod':
+      Environment.setConfig(ProdConfig.prodConfig);
+      break;
+    case 'stage':
+      Environment.setConfig(ProdConfig.prodConfig);
+      break;
+    case 'dev':
+    default:
+      Environment.setConfig(DevConfig.devConfig);
+      break;
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
   final appRouter = AppRouter();
   final sharedPreferences = await SharedPreferences.getInstance();
@@ -30,10 +49,10 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(themeNotifierProvider);
-
+    final config = Environment.config;
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Web Video Demo',
+      title: config.appName,
       theme: ThemeData.light(
         useMaterial3: true,
       ).copyWith(

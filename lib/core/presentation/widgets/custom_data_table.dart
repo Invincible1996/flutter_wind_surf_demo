@@ -169,9 +169,10 @@ class _CustomDataTableState extends State<CustomDataTable> {
                       borderRadius: BorderRadius.circular(12),
                       child: DataTable(
                         headingRowHeight: 56, // 增加表头高度
-                        dataRowHeight: 52, // 设置数据行高度
-                        headingRowColor: MaterialStateProperty.all(
-                            Colors.grey.shade50), // 表头背景色
+                        dataRowMinHeight: 52, // 更新为 dataRowMinHeight
+                        dataRowMaxHeight: 52, // 添加 dataRowMaxHeight
+                        headingRowColor: WidgetStateProperty.all(
+                            Colors.grey.shade50), // 更新为 WidgetStateProperty
                         border: TableBorder(
                           horizontalInside: BorderSide(
                               color: widget.borderColor.withOpacity(0.1)),
